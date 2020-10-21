@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf,org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="icons/style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+    <title>Gestió Cirvianum</title>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <span class="icon-library mr-2"></span>
+            <span>Institut Cirviànum</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Currículum
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Alumnat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="titolMp">
+    Gestió de Currículum
+</div>
+
+<div class="container mt-4">
+    <div class="row d-flex d-flex justify-content-around">
+
+        <form th:action="@{/addMp}" th:object="${mpBuit}" method="post" class="formppal border rounded p-3">
+            <div class="form-group">
+                <label for="inputMp">Mòdul Professional</label>
+                <input type="text" class="form-control" id="inputMp" aria-describedby="nomMp" th:field="*{nomMp}"/>
+                <small id="inputMpHelp" class="form-text text-muted">Introdueix el nou MP sense la numeració</small>
+            </div>
+            <div class="form-group">
+                <label for="inputNumMp">Número Mp</label>
+                <input  type="number" class="form-control" id="inputNumMp" th:field="*{numMp}"/>
+            </div>
+            <button type="submit" class="btn btn-primary" id="butDesaMp">Desa Mp</button>
+        </form>
+
+
+
+        <div th:each="mp : ${llistaMps}" class="card">
+            <form th:action="@{/openModal}" method="post">
+            <h5 th:text="${mp.numMp + ' - ' + mp.nomMp}" class="card-header">MP1 - Sistemes informàtics</h5>
+            <div class="card-body">
+                <h5 class="card-title">Unitats Formatives:</h5>
+                <p class="card-text"></p>
+                <div th:each="uf : ${mp.llistaUf}">
+                    <p th:text="${uf.numUf + ' - ' + uf.nomUf}" class="card-text">UF1 - Sistemes</p>
+                </div>
+                <input type="hidden" th:value="${mp.idMp}" name="idMp"/>
+                <button id="addUf" class="btn btn-primary" >Add UF</button>
+
+            </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+
+<!--      MODALS      -->
+
+
+<div th:if="${infoModal == true} "id="modalAddUf" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Afegir UF</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/addUf}" th:object="${ufBuida}" method="post">
+                    <div class="form-group">
+                        <label for="inputNomUf">Nom UF</label>
+                        <input th:field="*{nomUf}" type="text" class="form-control" id="inputNomUf" aria-describedby="ufHelp">
+                        <small id="ufHelp" class="form-text text-muted">Introdueix el nom de la UF sense número</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputNumUf">Número UF</label>
+                        <input th:field="*{numUf}" type="number" class="form-control" id="inputNumUf">
+                        <input type="hidden" th:value="${idMp}" name="idMp"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="butAddUf">Desa UF</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+<script src="jscript/jquery.js"></script>
+</body>
+</html>
